@@ -1,0 +1,24 @@
+# Testversion für Freunde. Die Daten gehen bei jedem Neustart verloren (kostenloser Tarif ohne Speicher).
+services:
+  - type: web
+    name: yoga-mit-pfoten-test
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: "true"
+    startCommand: "npm run seed && npm start"
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: AUTO_VERIFY
+        value: "1"
+      - key: DATA_DIR
+        value: /tmp/yoga-data
+      - key: ADMIN_EMAIL
+        value: annekathrinschmitt95@gmail.com
+      - key: SITE_URL
+        sync: false
