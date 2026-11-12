@@ -3,12 +3,12 @@
 // Beispielkurse neu anlegen (eigene Kurse bleiben):  npm run seed -- --neu
 // Läuft nur, wenn noch keine Kurse existieren. Beispielkurse kannst du in der Verwaltung ändern oder löschen.
 const path = require('node:path');
-const { loadEnv } = require('../server.js');
-const { openDb } = require('../lib/db.js');
-const { zonedMs } = require('../lib/util.js');
+const { loadEnv } = require('./server.js');
+const { openDb } = require('./db.js');
+const { zonedMs } = require('./util.js');
 
-loadEnv(path.join(__dirname, '..', '.env'));
-const dir = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
+loadEnv(path.join(__dirname, '.env'));
+const dir = process.env.DATA_DIR || path.join(__dirname, 'data');
 const db = openDb(path.join(dir, 'yoga.db'));
 if (process.argv.includes('--neu')) {
   // Ersetzt nur die als Beispiel markierten Kurse (samt ihren Buchungen), eigene Kurse bleiben
