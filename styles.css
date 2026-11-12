@@ -351,3 +351,14 @@ nav.tabs button.invite .badge{margin-left:8px;padding:1px 8px;border-radius:999p
 .plain{list-style:none;padding:0}
 @media (max-width:720px){.why-hero,.why-figure{grid-template-columns:1fr}.why-hero{padding:22px}}
 .why-hero .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+
+/* Conversion-first course discovery: retain existing course data and booking behavior. */
+.quickbook{display:flex;flex-direction:column;gap:16px;scroll-margin-top:24px;padding:24px;border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:var(--shadow)}
+.quickbook-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.quickbook-head>div{display:flex;flex-direction:column;gap:6px}
+.quickbook-head h2{font-size:clamp(24px,4vw,32px)}
+.quickbook-kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.quickbook-list{display:grid;grid-template-columns:1fr;gap:10px}
+.quickbook-list .card{box-shadow:none}
+.quickbook-list .card .act .btn{min-height:40px}
+@media(max-width:620px){.quickbook{padding:16px;border-radius:18px}.quickbook-head>.btn{width:100%}.quickbook-list .card{padding:12px}.quickbook-list .card .act .btn{min-height:44px}}
