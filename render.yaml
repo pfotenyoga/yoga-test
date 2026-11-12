@@ -1,12 +1,17 @@
-# Testversion für Freunde. Die Daten gehen bei jedem Neustart verloren (kostenloser Tarif ohne Speicher).
+# PAWIO staging: production bookings require persistent storage, verified email and mail delivery.
+# No demo seeding on each boot. Configure a persistent disk before collecting real data.
 services:
   - type: web
     name: yoga-mit-pfoten-test
     runtime: node
     region: frankfurt
-    plan: free
+    plan: starter
     buildCommand: "true"
-    startCommand: "npm run seed && npm start"
+    startCommand: "npm start"
+    disk:
+      name: pawio-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: "22"
@@ -15,10 +20,16 @@ services:
       - key: TRUST_PROXY
         value: "1"
       - key: AUTO_VERIFY
-        value: "1"
+        value: "0"
       - key: DATA_DIR
-        value: /tmp/yoga-data
-      - key: ADMIN_EMAIL
-        value: annekathrinschmitt95@gmail.com
+        value: /var/data
       - key: SITE_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
         sync: false

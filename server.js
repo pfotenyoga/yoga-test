@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+// The HTTP backend must be restored at lib/app.js before deployment.
 const { createApp } = require('./lib/app');
 
 /** Liest eine optionale .env-Datei, ohne Zusatzpakete */
@@ -41,6 +42,14 @@ function configFromEnv() {
 if (require.main === module) {
   loadEnv(path.join(__dirname, '.env'));
   const cfg = configFromEnv();
+  if (process.env.NODE_ENV === 'production' && cfg.autoVerify) {
+    console.error('PAWIO: AUTO_VERIFY=1 ist im Produktivbetrieb nicht erlaubt.');
+    process.exit(1);
+  }
+  if (process.env.NODE_ENV === 'production' && /^(\/tmp|\/var\/tmp)(\/|$)/.test(cfg.dataDir)) {
+    console.error('PAWIO: Temporärer DATA_DIR ist im Produktivbetrieb nicht erlaubt.');
+    process.exit(1);
+  }
   const app = createApp(cfg);
   app.server.listen(cfg.port, () => {
     console.log(`Yoga mit Pfoten läuft auf ${cfg.siteUrl} (Port ${cfg.port})`);
