@@ -345,7 +345,7 @@ function heroBlock(pup, t0) {
       h('h2', null, 'Yoga, bei dem der Hund mitmacht.'),
       h('p', { class: 'lead' }, 'Welpenyoga mit unseren Welpen, Kurse mit deinem eigenen Hund und klassisches Yoga ohne Fell. Such dir deinen Termin aus.'),
       h('div', { class: 'row heroact' },
-        h('button', { type: 'button', class: 'btn primary lg', onclick: function () { var t = document.querySelector('.tiles'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 'Kurs finden'),
+        h('button', { type: 'button', class: 'btn primary lg', onclick: function () { var t = document.querySelector('#next-bookable') || document.querySelector('.tiles'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 'Kurs finden'),
         h('button', { type: 'button', class: 'btn ghost lg', onclick: function () { go('raum'); } }, 'Den Raum ansehen'))),
     count);
 }
@@ -372,6 +372,21 @@ function viewKurse(v) {
   var up = S.courses.filter(function (c) { return c.date >= t0; });
   var pup = up.filter(function (c) { return c.type === 'welpen' && c.status !== 'abgesagt'; });
   v.append(heroBlock(pup, t0));
+  // Conversion-first: show real upcoming bookable sessions before secondary content.
+  var upcomingBookable = up.filter(function (c) {
+    return c.status !== 'abgesagt' && c.starts_at >= Date.now() && c.cap > c.taken && !c.example;
+  }).sort(function (a, b) { return a.starts_at - b.starts_at; }).slice(0, 4);
+  var quick = h('section', { id: 'next-bookable', class: 'quickbook', 'aria-label': 'Nächste buchbare Kurse' },
+    h('div', { class: 'quickbook-head' },
+      h('div', null, h('p', { class: 'quickbook-kicker' }, 'Dein nächstes Erlebnis'), h('h2', null, 'Jetzt Platz sichern'),
+        h('p', { class: 'muted' }, 'Die nächsten verfügbaren Termine – direkt aus unserem Kurskalender.')),
+      h('button', { type: 'button', class: 'btn', onclick: function () { document.querySelector('.tiles').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, 'Alle Kurse ansehen')));
+  if (upcomingBookable.length) {
+    quick.append(h('div', { class: 'quickbook-list' }, upcomingBookable.map(function (c) { return courseCard(c); })));
+  } else {
+    quick.append(h('p', { class: 'panel muted' }, 'Aktuell sind keine freien Termine verfügbar. Entdecke alle Kurse und Wartelisten weiter unten.'));
+  }
+  v.append(quick);
   v.append(h('section', { class: 'invitebar' }, h('div', null, h('strong', null, 'Bring eine Freundin mit'), h('span', null, 'Ihr bekommt beide ' + euro(S.config.referral_cents || 1000) + ' Gutschein, sobald sie ihren ersten Kurs gebucht hat.')),
     h('button', { type: 'button', class: 'btn primary', onclick: function () { go('einladen'); } }, 'Jetzt einladen')));
   v.append(h('ul', { class: 'trust' }, [['Kleine Gruppen', 'Persönlich und entspannt'], ['Unsere eigenen Welpen', 'Aufgewachsen im Studio'], ['Kostenlos stornieren', 'Bis ' + S.config.cancel_hours + ' Std. vorher'], ['Einfach bezahlen', 'Karte, PayPal oder bar']].map(function (x) { return h('li', null, h('strong', null, x[0]), h('span', null, x[1])); })));
